@@ -17,6 +17,10 @@ import matplotlib.pyplot as plt
 import  nvidia.dali.ops as ops
 import nvidia.dali.types as types
 
+FLAGS = tf.app.flags.FLAGS
+
+tf.app.flags.DEFINE_string('image_dir', None, """path to input directory""")
+
 image_dir = "../dali/examples/images"
 batch_size = 8
 
@@ -24,7 +28,7 @@ batch_size = 8
 class SimplePipeline(Pipeline):
     def __init__(self, batch_size, num_threads, device_id):
         super(SimplePipeline, self).__init__(batch_size, num_threads, device_id, seed=12)
-        self.input = ops.FileReader(file_root = image_dir)
+        self.input = ops.FileReader(file_root=FLAGS.image_dir)
         self.decode = ops.HostDecoder(output_type = types.RGB)
 
     def define_graph(self):
@@ -36,7 +40,7 @@ class SimplePipeline(Pipeline):
 class ShuffledSimplePipeline(Pipeline):
     def __init__(self, batch_size, num_threads, device_id):
         super(ShuffledSimplePipeline, self).__init__(batch_size, num_threads, device_id, seed = 12)
-        self.input = ops.FileReader(file_root = image_dir, random_shuffle = True, initial_fill = 21)
+        self.input = ops.FileReader(file_root=FLAGS.image_dir, random_shuffle = True, initial_fill = 21)
         self.decode = ops.HostDecoder(output_type = types.RGB)
 
     def define_graph(self):
@@ -48,7 +52,7 @@ class ShuffledSimplePipeline(Pipeline):
 class nvJPEGPipeline(Pipeline):
     def __init__(self, batch_size, num_threads, device_id):
         super(nvJPEGPipeline, self).__init__(batch_size, num_threads, device_id, seed = 12)
-        self.input = ops.FileReader(file_root = image_dir, random_shuffle = True, initial_fill = 21)
+        self.input = ops.FileReader(file_root=FLAGS.image_dir, random_shuffle = True, initial_fill = 21)
         self.decode = ops.nvJPEGDecoder(device = "mixed", output_type = types.RGB)
 
     def define_graph(self):
@@ -71,7 +75,7 @@ def show_images(image_batch):
     plt.show()
 
 
-def main():
+def main(argv=None):
     # Simple pipeline example
     pipe = ShuffledSimplePipeline(batch_size, 1, 0)
     pipe.build()
@@ -127,4 +131,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    tf.app.run()
