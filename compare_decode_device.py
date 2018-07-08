@@ -20,8 +20,8 @@ import nvidia.dali.types as types
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('image_dir', None, """path to input directory""")
+tf.app.flags.DEFINE_integer('batch_size', 64, """batch size""")
 
-image_dir = "../dali/examples/images"
 batch_size = 8
 
 
@@ -76,41 +76,8 @@ def show_images(image_batch):
 
 
 def main(argv=None):
-    # Simple pipeline example
-    pipe = ShuffledSimplePipeline(batch_size, 1, 0)
-    pipe.build()
-    pipe_out = pipe.run()
-    print(pipe_out)
-    images, labels = pipe_out
-    print("Images type is: " + str(type(images)))
-    print("Labels type is: " + str(type(labels)))
-    print("Images is_dense_tensor: " + str(images.is_dense_tensor()))
-    print("Labels is_dense_tensor: " + str(labels.is_dense_tensor()))
 
-    # is_dense_tensor() = False なTensorListはas_tensorが使えない。atメソッドで要素を一つずつ取り出すしかない
-    print(type(images.at(0)))
-    labels_tensor = labels.as_tensor()
-
-    print(labels_tensor.shape())
-    print(np.array(labels_tensor))
-
-    show_images(images)
-
-    # nvJPEG pipeline example
-    pipe = nvJPEGPipeline(batch_size, 1, 0)
-    pipe.build()
-    pipe_out = pipe.run()
-    print(pipe_out)
-    images, labels = pipe_out
-    print("Images type is: " + str(type(images)))
-    print("Labels type is: " + str(type(labels)))
-    print("Images is_dense_tensor: " + str(images.is_dense_tensor()))
-    print("Labels is_dense_tensor: " + str(labels.is_dense_tensor()))
-
-    images, labels = pipe_out
-    show_images(images.asCPU())
-
-    test_batch_size = 64
+    test_batch_size = FLAGS.batch_size
 
     def speedtest(pipeclass, batch, n_threads):
         pipe = pipeclass(batch, n_threads, 0)
