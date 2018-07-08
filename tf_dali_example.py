@@ -11,7 +11,7 @@ import time
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('tfrecord', None, """path to tfrecord""")
-tf.app.flags.DEFINE_boolean('dali', None, """Whether to use NVIDIA-dali""")
+tf.app.flags.DEFINE_boolean('dali', True, """Whether to use NVIDIA-dali""")
 
 TFRECORD2IDX_SCRIPT = "tfrecord2idx"
 DEVICES = 1

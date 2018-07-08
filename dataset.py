@@ -46,8 +46,7 @@ class TFRecordPipeline(Pipeline):
         output = self.cmnp(resized_images, crop_pos_x = self.uniform(),
                            crop_pos_y = self.uniform())
         return (output, inputs["image/class/label"].gpu())
-
-    def iter_setup(self):
+def iter_setup(self):
         pass
 
 
@@ -95,7 +94,7 @@ def inputs_tf(batch_size, devices, tfrecord):
 
     def _preprocess(image, label):
         image = tf.image.resize_images(image, size=(256, 256))
-        image = tf.image.random_flip_left_right(image)
+        # image = tf.image.random_flip_left_right(image)
         image = tf.random_crop(image, size=(224, 224, 3))
         return image, label
 
